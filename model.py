@@ -10,14 +10,20 @@ class MyModel(nn.Module):
         self.model = nn.Sequential(
             
             nn.Conv2d(3, 16, 3, stride=3, padding=1),
-            nn.Dropout2d(dropout),
+            nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-
+            
             nn.Conv2d(16, 32, 3, stride=3, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-
+                        
+            nn.Conv2d(32, 64, 3, stride=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            
             nn.Flatten()
         )
 
@@ -31,8 +37,8 @@ class MyModel(nn.Module):
             nn.Linear(self.input_to_head, num_classes * 2),
             nn.Dropout(dropout),
             nn.ReLU(),
-
-            nn.Linear(num_classes * 2, num_classes) 
+            nn.Linear(num_classes * 2, num_classes),
+            nn.Softmax(dim=1) 
         )
 
     def get_input_to_head(self):
