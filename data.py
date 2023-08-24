@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 
 def get_data_loaders(
-        batch_size: int = 32, valid_size: float = 0.2, num_workers: int = 1, limit: int = -1
+        batch_size: int = 32, valid_size: float = 0.2, num_workers: int = -1, limit: int = -1
 ):
     """
     Create and returns the train_one_epoch, validation and test data loaders.
@@ -27,6 +27,10 @@ def get_data_loaders(
             train_one_epoch, validation and test data loaders
     """
 
+    if num_workers == -1:
+        # Use all cores
+        num_workers = multiprocessing.cpu_count()
+        
     # We will fill this up later
     data_loaders = {"train": None, "valid": None, "test": None}
 
@@ -51,7 +55,7 @@ def get_data_loaders(
             T.RandomCrop(224),
 
             T.RandomHorizontalFlip(0.5),
-            T.RandAugment(2, magnitude=13, interpolation=T.InterpolationMode.BILINEAR),
+            T.RandAugment(2, magnitude = 9, interpolation = T.InterpolationMode.BILINEAR),
 
             T.ToTensor(),
             T.Normalize(mean, std)]
@@ -175,7 +179,6 @@ def visualize_one_batch(data_loaders, max_n: int = 5):
 
     images = invTrans(images)
 
-    # YOUR CODE HERE:
     # Get class names from the train data loader
     class_names = {idx: cls for cls, idx in data_loaders['train'].dataset.class_to_idx.items()}
 
